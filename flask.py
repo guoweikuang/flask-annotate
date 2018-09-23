@@ -49,6 +49,7 @@ class Request(RequestBase):
     the request object used you can subclass this and set
     :attr:`~flask.Flask.request_class` to your subclass.
 
+    该类主要使用了Werkzeug库中的Request类实现的
     flask 默认的请求对象. 保存了匹配的端点(博客里该部分解释)和视图参数.
     想要替换默认的request对象，可以子类化这个类，然后赋值给Flask中的request_class.
     """
@@ -67,6 +68,11 @@ class Response(ResponseBase):
 
     If you want to replace the response object used you can subclass this and
     set :attr:`~flask.Flask.request_class` to your subclass.
+
+    该类主要使用了Werkzeug库中的Response类实现的.
+    flask 默认的响应对象，这里设置了默认的mimetype为HTML类型（即是定义了Content-Type 返回类型为HTML).
+    不用自己来创建这个对象，因为Flask类中有make_response 会创建它.
+    如果想要替换该response对象，你可以子类化这个Response类，然后通过赋值给Flask的request_class来替换.
     """
     default_mimetype = 'text/html'
 
