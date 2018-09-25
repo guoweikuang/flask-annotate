@@ -430,7 +430,11 @@ class Flask(object):
 
     def route(self, rule, **options):
         """A decorator that is used to register a view function for a
-        given URL rule.  Example::
+        given URL rule.  
+        
+        用于为给定的URL 规则注册一个视图函数的装饰器.
+        
+        Example::
 
             @app.route('/')
             def index():
@@ -441,9 +445,15 @@ class Flask(object):
         in the URL accepts any string without a slash however a different
         converter can be specified as well by using ``<converter:name>``.
 
+        可以使用<>尖括号指定route路由的变量部分，默认情况下URL中的变量
+        接收任何的没有斜杠的字符串，但是可以使用<converter:name>来指定不同的converter.
+
         Variable parts are passed to the view function as keyword
         arguments.
 
+        变量部分作为视图函数的关键字参数传入.
+
+        转换器(convertor) 类型可以如下几种：
         The following converters are possible:
 
         =========== ===========================================
@@ -470,11 +480,20 @@ class Flask(object):
         slashes.  The idea is to keep each URL unique so the following rules
         apply:
 
+        一个重要的细节需要注意的是,Flask在处理斜线的. 为了保持URL的唯一性，下面的规则会被应用：
+
         1. If a rule ends with a slash and is requested without a slash
            by the user, the user is automatically redirected to the same
            page with a trailing slash attached.
+
+        1、如果一个rule以一个斜线结尾并且用户请求路径中没有带上斜线，那么用户
+        自动重定向到相同的已经附加了斜线的页面。
+
         2. If a rule does not end with a trailing slash and the user request
            the page with a trailing slash, a 404 not found is raised.
+
+        2、如果一个rule不以一个斜线结尾并且用户请求路径中带上这个斜线的话，
+        一个404 not found 错误会报出来.
 
         This is consistent with how web servers deal with static files.  This
         also makes it possible to use relative link targets safely.
@@ -482,20 +501,30 @@ class Flask(object):
         The :meth:`route` decorator accepts a couple of other arguments
         as well:
 
-        :param rule: the URL rule as string
+        :param rule: the URL rule as string  # 字符串类型的URL 规则
         :param methods: a list of methods this rule should be limited
                         to (``GET``, ``POST`` etc.).  By default a rule
                         just listens for ``GET`` (and implicitly ``HEAD``).
+
+                        这个rule(规则)应该限制一系列的methods(GET, POST).
+                        默认规则就是只监听GET请求.
         :param subdomain: specifies the rule for the subdoain in case
                           subdomain matching is in use.
+
+                         当子域名匹配使用时，为规则指定子域.
         :param strict_slashes: can be used to disable the strict slashes
                                setting for this rule.  See above.
+
+                               是否为这个rule关闭严格的斜杠匹配.
         :param options: other options to be forwarded to the underlying
                         :class:`~werkzeug.routing.Rule` object.
         """
         def decorator(f):
-            self.add_url_rule(rule, f.__name__, **options)
-            self.view_functions[f.__name__] = f
+            """
+            这是最简单的装饰器的实践，使用add_url_rule将rule(路由规则)与视图函数绑定在一起.
+            """
+            self.add_url_rule(rule, f.__name__, **options)  # 添加路由规则,options传入一些可选项给Rule类
+            self.view_functions[f.__name__] = f             # 为之前Flask类定义的view_function列表中添加注册过的视图函数
             return f
         return decorator
 
