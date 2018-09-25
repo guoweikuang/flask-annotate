@@ -404,6 +404,8 @@ class Flask(object):
         """Connects a URL rule.  Works exactly like the :meth:`route`
         decorator but does not register the view function for the endpoint.
 
+        连接一个URL规则. 类似于route装饰器做的工作，但是不会为端点（endpoint)注册视图函数
+
         Basically this example::
 
             @app.route('/')
@@ -417,16 +419,25 @@ class Flask(object):
             app.add_url_rule('index', '/')
             app.view_functions['index'] = index
 
-        :param rule: the URL rule as string
+            这里示例错了，应该是
+            app.add_url_rule('/', 'index')
+            端点(endpoint)是视图函数名称, rule（规则)是'/'.
+
+
+        :param rule: the URL rule as string    # 字符串类型的URL规则
         :param endpoint: the endpoint for the registered URL rule.  Flask
                          itself assumes the name of the view function as
                          endpoint
+
+                         已注册URL规则的端点. Flask 本身将视图函数的名称作为一个端点.
         :param options: the options to be forwarded to the underlying
                         :class:`~werkzeug.routing.Rule` object
+
+                        可选项，转发给底层的werkzeug.routing.Rule对象的选项
         """
-        options['endpoint'] = endpoint
-        options.setdefault('methods', ('GET',))
-        self.url_map.add(Rule(rule, **options))
+        options['endpoint'] = endpoint  
+        options.setdefault('methods', ('GET',))  # 默认设置methods为GET
+        self.url_map.add(Rule(rule, **options))  # 使用Werkzeug的Rule来实现规则的相关工作，具体参考博客.
 
     def route(self, rule, **options):
         """A decorator that is used to register a view function for a
@@ -524,7 +535,7 @@ class Flask(object):
             这是最简单的装饰器的实践，使用add_url_rule将rule(路由规则)与视图函数绑定在一起.
             """
             self.add_url_rule(rule, f.__name__, **options)  # 添加路由规则,options传入一些可选项给Rule类
-            self.view_functions[f.__name__] = f             # 为之前Flask类定义的view_function列表中添加注册过的视图函数
+            self.view_functions[f.__name__] = f             # 将端点（endpoint, 默认使用函数名f.__name__)与函数对象的映射存入前面Flask定义的view_functions列表中
             return f
         return decorator
 
