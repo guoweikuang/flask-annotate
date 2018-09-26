@@ -329,18 +329,29 @@ class Flask(object):
         :attr:`debug` flag is set the server will automatically reload
         for code changes and show a debugger in case an exception happened.
 
+        在本地的开发服务器运行应用.如果设置了Flask 的debug，当项目代码发生变化时，
+        自动重载，并在异常发生时提供一个调试器.
+
         :param host: the hostname to listen on.  set this to ``'0.0.0.0'``
                      to have the server available externally as well.
+                    
+                     需要监听的hostname, 设置为‘0.0.0.0’ 外部服务器可访问
+
         :param port: the port of the webserver
+
+                     web服务的端口
+
         :param options: the options to be forwarded to the underlying
                         Werkzeug server.  See :func:`werkzeug.run_simple`
                         for more information.
+
+                     这些可选项会转发给Werkzeug服务器处理.
         """
-        from werkzeug import run_simple
+        from werkzeug import run_simple   # 使用werkzeug 的run_simple 来运行wsgi应用, 具体请看博客
         if 'debug' in options:
             self.debug = options.pop('debug')
-        options.setdefault('use_reloader', self.debug)
-        options.setdefault('use_debugger', self.debug)
+        options.setdefault('use_reloader', self.debug)  # 如果debug == True, 开启重载器，也就是监控代码是否变化
+        options.setdefault('use_debugger', self.debug)  # 如果debug == True，开启调试器, 在异常时提供
         return run_simple(host, port, self, **options)
 
     def test_client(self):
